@@ -6,7 +6,7 @@ import { HTTPException } from "hono/http-exception";
 import { verify } from "hono/jwt";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { JWTPayload } from "hono/utils/jwt/types";
+import { getCookie } from "hono/cookie";
 
 const app = new Hono<{
   Bindings: {
@@ -35,7 +35,7 @@ app.use("/api/v1/blog/*", async (c: AppContext, next) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const token = c.req.header("token") || "";
+  const token = getCookie(c, "token") || "";
   const deodedToken = (await verify(token, c.env.JWT_SECRET)) as jwtPayload;
   const user = await prisma.user.findUnique({
     where: {
@@ -81,7 +81,8 @@ app.onError((err, c: Context) => {
   }
   return c.json(
     {
-      success: true,
+      success: false,
+      error: err,
       message: "Something went wrong",
     },
     500

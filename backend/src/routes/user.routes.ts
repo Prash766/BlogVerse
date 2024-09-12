@@ -40,7 +40,10 @@ userRouter.post("/signup", async (c: Context) => {
 setCookie(c , "token" , token)
     return c.json({
         token:token,
-         message: "User created successfully" }
+         message: "User created successfully",
+         user:user
+        
+        }
          , 201);
   } catch (error) {
     return c.json(
