@@ -90,6 +90,7 @@ const loginUser = async (c: Context) => {
       {
         success: true,
         message: "User logged in",
+        user:user
       },
       200
     );

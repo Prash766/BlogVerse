@@ -21,6 +21,7 @@ const errorMiddleware = (err: Error | HTTPException, c: Context) => {
       411
     );
   }
+  console.log(err)
   return c.json(
     {
       success: false,
