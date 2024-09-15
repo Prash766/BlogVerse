@@ -3,8 +3,9 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { Context, Next } from "hono";
 import { setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
-import { sign } from "hono/jwt";
+import { sign, verify } from "hono/jwt";
 import { signinUserSchema, signupInputSchema } from "@prash766/common-app";
+import { JwtTokenExpired } from "hono/utils/jwt/types";
 
 const userSignup = async (c: Context) => {
   const prisma = new PrismaClient({
@@ -24,12 +25,15 @@ const userSignup = async (c: Context) => {
         email: body.email,
         password: body.password,
         FullName: body.FullName,
+        
       },
     });
     const token = await sign(
       {
         id: user.id,
         email: user.email,
+        exp:Math.floor(Date.now() / 1000) +(24 * 60 * 60)
+
       },
       c.env.JWT_SECRET
     );
@@ -81,6 +85,7 @@ const loginUser = async (c: Context) => {
       {
         id: user.id,
         email: user.email,
+        exp:Math.floor(Date.now() / 1000) +(24 * 60 * 60)
       },
       c.env.JWT_SECRET
     );
@@ -103,4 +108,48 @@ const loginUser = async (c: Context) => {
   }
 };
 
-export { userSignup, loginUser };
+const verifyUser = async(c:Context)=>{
+  const cookieHeader = c.req.header('Cookie') || "";
+  const token = cookieHeader.split("token=")[1];
+  if (!token) {
+    return c.json({
+      success: false,
+      message: "Token not found",
+    }, 400);
+
+  }
+  type DecodedToken=  {
+    id: string;
+    email: string;
+    exp?: number; // Optional expiration claim
+  }
+try {
+   const decodedToken =  (await verify(token , c.env.JWT_SECRET) ) as DecodedToken  
+   const prisma =  new PrismaClient({
+    datasourceUrl:c.env.DATABASE_URL
+   }).$extends(withAccelerate())
+   const user = await prisma.user.findUnique({
+    where:{
+      email: decodedToken.email
+    }
+   })
+    return c.json({
+      success:true,
+      message:"User is Authenticated",
+      user:user
+
+    }, 200)
+  
+} catch (error) {
+  return c.json({
+    success:false,
+    message:"Invalid Token"
+  }, 400)
+  
+}  
+
+
+
+}
+
+export { userSignup, loginUser , verifyUser };
