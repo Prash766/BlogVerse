@@ -1,4 +1,10 @@
-const Blog = () => {
+
+interface propTypes{
+  content:string,
+  title:string
+}
+
+const Blog = ({content , title}:propTypes) => {
   return (
     <div className="max-w-full h-40 mr-20 flex mt-10 ml-10 gap-4 border-b border-b-slate-300">
       {/* Left Section: Title and Description */}
@@ -18,15 +24,16 @@ const Blog = () => {
         </div>
 
         {/* Blog title */}
-        <h1 className="font-bold text-2xl">Node.js is faster than Go</h1>
+        <h1 className="font-bold text-2xl">{title}</h1>
 
         {/* Description of the Blog */}
         <div className="">
           <p className="text-md text-gray-500 line-clamp-2 overflow-hidden text-ellipsis">
-            JavaScript is a versatile and powerful language that is essential
+            {content}
+            {/* JavaScript is a versatile and powerful language that is essential
             for modern web development. Here are super hacks that will make you
             a more efficient and effective JavaScript developer, with detailed
-            explanations and examples for each one.
+            explanations and examples for each one. */}
           </p>
         </div>
       </div>

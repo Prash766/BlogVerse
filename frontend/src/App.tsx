@@ -4,6 +4,7 @@ import Login from "./pages/Auth/Login"
 import Signup from "./pages/Auth/Signup"
 import Home from "./pages/Home/Home"
 import CreateBlog from "./pages/NewBlog/CreateBlog"
+import ProtectedRoutes from "./utils/ProtectedRoutes"
 
 function App() {
 
@@ -12,10 +13,12 @@ function App() {
     <BrowserRouter>
     <Routes>
       <Route path='/' element={<LandingPage/>} />
-      <Route path='/home' element={<Home/>} />
       <Route path='/login' element={<Login/>}/>
-      <Route path='/write' element={<CreateBlog/>}/>
       <Route path='/signup' element={<Signup/>}/>
+      <Route element={<ProtectedRoutes/>}>
+      <Route path='/home' element={<Home/>} />
+      <Route path='/write' element={<CreateBlog/>}/>
+      </Route>
     </Routes>
     </BrowserRouter>
       
