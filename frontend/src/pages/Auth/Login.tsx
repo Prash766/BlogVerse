@@ -6,7 +6,7 @@ import { PenSquare, Loader, LogInIcon } from "lucide-react";
 import Footer from "@/utils/Footer";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
-import { userInfo } from "@/atoms/user";
+import { isAuthenticated, userInfo } from "@/atoms/user";
 import { axiosClient } from "@/axios/axios";
 import { SigninType } from "@prash766/common-app";
 import { toast } from "sonner";
@@ -15,6 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const setAuthState = useSetRecoilState(isAuthenticated)
   const setUserInfo = useSetRecoilState(userInfo);
   const navigate = useNavigate();
 
@@ -31,6 +32,7 @@ export default function Login() {
       toast.success("Logged In");
       navigate("/home", { replace: true });
       console.log(response.data.user)
+      setAuthState(true)
       setUserInfo(response.data.user);
     }else{
       setIsLoading(false)

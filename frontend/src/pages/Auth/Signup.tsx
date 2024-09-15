@@ -10,13 +10,16 @@ import { SignupType } from "@prash766/common-app";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { userInfo } from "@/atoms/user";
+import { isAuthenticated, userInfo } from "@/atoms/user";
 
 export default function Singup() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  
   const [isLoading, setIsLoading] = useState(false);
+  const setAuthState = useSetRecoilState(isAuthenticated)
+
   const setUserInfo = useSetRecoilState(userInfo);
   const navigate = useNavigate();
 
@@ -34,6 +37,7 @@ export default function Singup() {
       setIsLoading(false);
       toast.success("User Signed Up");
       setUserInfo(response.data.user);
+      setAuthState(true)
       navigate("/home", { replace: true });
     }
   }

@@ -13,7 +13,7 @@ const blogRouter = new Hono<{
   };
 }>();
 
-blogRouter.get("/blog", getAllBlogs);
+blogRouter.get("/allBlogs", getAllBlogs);
 blogRouter.post("/newBlog", newBlog);
 
 blogRouter.put("/blog/:id", updateBlog);
