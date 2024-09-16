@@ -15,7 +15,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const setAuthState = useSetRecoilState(isAuthenticated)
+  const setAuthState = useSetRecoilState(isAuthenticated);
   const setUserInfo = useSetRecoilState(userInfo);
   const navigate = useNavigate();
 
@@ -31,25 +31,26 @@ export default function Login() {
     if (response.status === 200) {
       toast.success("Logged In");
       navigate("/home", { replace: true });
-      console.log(response.data.user)
-      setAuthState(true)
+      console.log(response.data.user);
+      setAuthState(true);
       setUserInfo(response.data.user);
-    }else{
-      setIsLoading(false)
-      toast.error("Something went wrong")
+    } else {
+      setIsLoading(false);
+      toast.error("Something went wrong");
     }
   }
 
   return (
     <div className="flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center">
-        <Link to="#" className="flex items-center justify-center">
+        <NavLink to="/" className="flex items-center justify-center">
           <PenSquare className="h-6 w-6 mr-2" />
           <h1 className="text-2xl font-bold md:text-2xl lg:text-2xl">
-            <NavLink to="/">BlogVerse</NavLink>
+            BlogVerse
           </h1>
-        </Link>
+        </NavLink>
       </header>
+
       <main className="flex-1 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
         <div className="w-full max-w-md p-8 bg-white dark:bg-gray-900 rounded-lg shadow-lg">
           <div className="text-center mb-8">
@@ -84,7 +85,7 @@ export default function Login() {
               onClick={(e) => handleLogin(e)}
               className="w-full"
               type="submit"
-              disabled = {isLoading}
+              disabled={isLoading}
             >
               {isLoading ? (
                 <Loader className="w-6 h-6 animate-spin" />
