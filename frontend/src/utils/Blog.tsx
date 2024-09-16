@@ -1,10 +1,17 @@
 
+export type Author={
+  FullName:string,
+  email:string,
+  id:string,
+}
+
 interface propTypes{
+  author:Author,
   content:string,
   title:string
 }
 
-const Blog = ({content , title}:propTypes) => {
+const Blog = ({content , title , author }:propTypes) => {
   return (
     <div className="max-w-full h-40 mr-20 flex mt-10 ml-10 gap-4 border-b border-b-slate-300">
       {/* Left Section: Title and Description */}
@@ -14,7 +21,7 @@ const Blog = ({content , title}:propTypes) => {
           <div className="w-8 h-8 rounded-full overflow-hidden border bg-red-500 border-gray-300"></div>
           <div className="flex justify-center items-center gap-1">
             <span className="font-semibold text-sm hover:underline hover:cursor-pointer">
-              Jonathan Saring
+            {author.FullName}
             </span>
             <span> in </span>
             <span className="font-semibold text-sm hover:underline hover:cursor-pointer">

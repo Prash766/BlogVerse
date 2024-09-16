@@ -2,15 +2,8 @@ import { Button } from "@/components/ui/button";
 import NavBar from "./NavBar";
 import Card from "./Card";
 import { ArrowRight } from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Footer from "@/utils/Footer";
-import { axiosClient } from "@/axios/axios";
-import { toast } from "sonner";
-import { useQuery } from "@tanstack/react-query";
-import SkeletonUi from "@/utils/SkeletonUi";
-
-
-
 
 const LandingPage = () => {
   return (
@@ -81,13 +74,13 @@ const LandingPage = () => {
               variant="outline"
               className="bg-white hover:bg-gray-300 text-black"
             >
-               <NavLink to='/login'>Log in or Sign Up</NavLink>
-           
+              <NavLink to="/login">Log in or Sign Up</NavLink>
+
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </div>
         </section>
-        <Footer/>
+        <Footer />
       </main>
     </>
   );

@@ -1,4 +1,4 @@
-import Blog from "@/utils/Blog";
+import Blog, { Author } from "@/utils/Blog";
 import HomeNavBar from "./HomeNavBar";
 import SkeletonUi from "@/utils/SkeletonUi";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +9,8 @@ type Blog = {
   id: number;
   title: string;
   content: string;
+  author: Author
+  
 };
 
 const fetchBlogs = async () => {
@@ -16,7 +18,8 @@ const fetchBlogs = async () => {
   if (response.status === 400) {
     toast.error("Error fetching data");
   }
-  return response.data.blog;
+  console.log(response.data.blog)
+  return response.data.blog.reverse();
 };
 
 const Home = () => {
@@ -40,7 +43,7 @@ const Home = () => {
 
       <main className="flex flex-col ">
         {blog.map((blog: Blog) => (
-          <Blog key={blog.id} title={blog.title} content={blog.content} />
+          <Blog key={blog.id} title={blog.title} content={blog.content}  author={blog.author}/>
         ))}
         {/* <Blog/>
         <Blog/>
