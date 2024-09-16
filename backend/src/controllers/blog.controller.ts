@@ -15,24 +15,37 @@ const newBlog = async (c: Context) => {
   }>();
   body = createPostSchema.parse(body);
 
-  const blog = await prisma.post.create({
-    data: {
-      title: body.title,
-      content: body.content,
-      published: body.published,
-      author: {
-        connect: {
-          id: body.authorId,
+  const [blog, user] = await Promise.all([
+    prisma.post.create({
+      data: {
+        title: body.title,
+        content: body.content,
+        published: body.published,
+        author: {
+          connect: {
+            id: body.authorId,
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.user.findUnique({
+      where: {
+        id: body.authorId,
+      },
+      select: {
+        FullName: true,
+      },
+    }),
+  ]);
 
   return c.json(
     {
       success: true,
       message: "New post created",
-      blog: blog,
+      blog: {
+        ...blog,
+        AuthorName: user,
+      },
     },
     200
   );
@@ -42,7 +55,17 @@ const getAllBlogs = async (c: Context) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const blog = await prisma.post.findMany({});
+  const blog = await prisma.post.findMany({
+    include:{
+      author:{
+        select:{
+          id:true,
+          FullName:true,
+          email:true
+        }
+      }
+    }
+  });
 
   return c.json({
     success: true,
