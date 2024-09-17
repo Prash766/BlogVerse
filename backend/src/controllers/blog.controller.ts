@@ -44,7 +44,7 @@ const newBlog = async (c: Context) => {
       message: "New post created",
       blog: {
         ...blog,
-        AuthorName: user,
+        author: user,
       },
     },
     200
