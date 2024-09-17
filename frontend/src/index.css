@@ -64,3 +64,45 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  #editorjs h1 {
+    @apply text-4xl font-serif font-bold leading-tight;
+  }
+  
+  #editorjs h2 {
+    @apply text-3xl font-serif font-medium leading-snug;
+  }
+  
+  #editorjs h3 {
+    @apply text-2xl font-serif font-medium leading-normal;
+  }
+
+
+  /* You can define styles for other heading levels */
+}
+
+/* Ensure the editor content starts aligned with the title */
+.ce-block__content {
+  max-width: 100%;  /* Allow content to take full width */
+  margin-left: 0;   /* Remove any left margin to align with the title */
+  padding-left: 0;  /* Ensure no padding for proper alignment */
+}
+
+/* Ensure the toolbar also takes up full width */
+.ce-toolbar__content {
+  max-width: 100%;  /* Allow toolbar to expand fully */
+  width: 100%;
+}
+.codex-editor__loader { height: 38px !important; }
+
+
+
+/* Optional: Set full width and height for editor container */
+#editorjs {
+  width: 98%;  /* Ensure it takes full width */
+  margin-left: 100px; /* Align to the left */
+  padding-left: 0; /* Ensure no padding for alignment */
+  padding-right: 0; /* Full width padding removal */
+}
+

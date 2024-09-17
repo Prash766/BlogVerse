@@ -18,3 +18,20 @@ export const blogInfo = atom<blogType>({
     id: "",
   },
 });
+
+
+
+export const AttachmentClicked = atom<boolean>({
+  key:"attachmentClickedAtom",
+  default:false
+})
+
+export const PublishButtonClicked = atom<boolean>({
+  key:"publishedClickedAtom",
+  default:false
+})
+
+export const Loading = atom<boolean>({
+  key:"booleanatom",
+  default:false
+})

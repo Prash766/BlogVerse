@@ -5,8 +5,13 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+ 
   theme: {
   	extend: {
+		spacing: {
+        '84': '22rem',  // Adjust the value as needed
+        '87': '21.75rem' // Adjust the value as needed
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
