@@ -46,6 +46,7 @@ const newBlog = async (c: Context) => {
         ...blog,
         author: user,
       },
+      cursor: blog.id,
     },
     200
   );
@@ -55,22 +56,38 @@ const getAllBlogs = async (c: Context) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
+  let cursor = c.req.query("cursor") || null;
+  const pageSize = 10;
+  if (!cursor || cursor === "null" || cursor === "") {
+    cursor = null;
+  }
+
   const blog = await prisma.post.findMany({
-    include:{
-      author:{
-        select:{
-          id:true,
-          FullName:true,
-          email:true
-        }
-      }
-    }
+    take: pageSize,
+    ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}), // Apply skip and cursor only when cursor exists
+    orderBy: {
+      createdAt: "desc", // Ensure latest blogs come first
+    },
+
+    include: {
+      author: {
+        select: {
+          id: true,
+          FullName: true,
+          email: true,
+        },
+      },
+    },
   });
+
+  const nextCursor = blog.length === pageSize ? blog[blog.length - 1].id : null;
 
   return c.json({
     success: true,
     message: "All the blogs fetched",
     blog: blog,
+    cursor: nextCursor,
+    currentBlogsLength: blog.length,
   });
 };
 
@@ -105,6 +122,7 @@ const updateBlog = async (c: Context) => {
         success: true,
         message: "Blog upated successfully",
         blog: blog,
+        cursor: blog.id,
       },
       200
     );
@@ -132,4 +150,29 @@ const getBlog = async (c: Context) => {
   });
 };
 
-export { newBlog, getAllBlogs, updateBlog, getBlog };
+const increaseLike = async (c: Context) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const { blogId, like } = await c.req.json();
+  const blog = await prisma.post.update({
+    where: {
+      id: blogId,
+    },
+    data: {
+      like: like,
+    },
+  });
+
+  return c.json(
+    {
+      success: true,
+      blog: blog,
+    },
+    200
+  );
+};
+
+export { newBlog, getAllBlogs, updateBlog, getBlog,
+  increaseLike
+ };

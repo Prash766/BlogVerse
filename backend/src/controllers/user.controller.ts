@@ -6,6 +6,14 @@ import { HTTPException } from "hono/http-exception";
 import { sign, verify } from "hono/jwt";
 import { signinUserSchema, signupInputSchema } from "@prash766/common-app";
 import { JwtTokenExpired } from "hono/utils/jwt/types";
+import { encodeBase64 } from "hono/utils/encode";
+import { v2 as cloudinary } from "cloudinary";
+
+interface UpdateProfile{
+  FullName? :string,
+  userId: string
+}
+
 
 const userSignup = async (c: Context) => {
   const prisma = new PrismaClient({
@@ -152,4 +160,19 @@ try {
 
 }
 
-export { userSignup, loginUser , verifyUser };
+const logoutUser = async(c:Context)=>{
+  setCookie(c, 'token' ,"")
+  return c.json({
+    success:true,
+    message:"user logged out successfully"
+
+  }, 200)
+  
+}
+
+
+
+
+
+
+export { userSignup, loginUser , verifyUser , logoutUser };

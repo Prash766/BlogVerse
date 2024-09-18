@@ -1,10 +1,12 @@
 import { Context, Hono, Next } from "hono";
-
+import { v2 as cloudinary } from "cloudinary";
 import blogRouter from "./routes/blog.routes";
 import userRouter from "./routes/user.routes";
 import { errorMiddleware } from "./middlewares/error";
 import { verifyJWT } from "./middlewares/auth.middleware";
 import {cors} from 'hono/cors'
+
+
 
 const app = new Hono<{
   Bindings: {
