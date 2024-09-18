@@ -6,6 +6,9 @@ compatibility_flags = [ "nodejs_compat" ]
  DATABASE_URL="prisma://accelerate.prisma-data.net/?api_key=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcGlfa2V5IjoiMzY1MjFlY2YtMjkyMS00YzgzLWI5YTgtZmQwZjNmY2RiMmQ2IiwidGVuYW50X2lkIjoiNmY1NzJlZjUxNDVjNGZiNmQ2OThjMDA1MzAwNTAyNWY3ZmJjZWNkNDdiNjFlM2NhMjcyMDA4YWI0YmFkODU4YiIsImludGVybmFsX3NlY3JldCI6ImUwMDlhOThjLTA2YTYtNDdhOC1hMDdiLTdhNWU5ZGI2OTVlNyJ9.znGLoY8FBLdAtOA6wqIZZTSVhRk2frwtsn4eTW8EcbE"
  JWT_SECRET='secret'
  FRONTEND_URL='http://localhost:5173'
+ CLOUDINARY_NAME= 'dwhuvwrpu'
+ CLOUDINARY_API_KEY= '359276588484637'
+ CLOUDINARY_API_SECRET = 'P9vrmz2iWq1RVma6jLm8gJ3dhAU'
  
 # [[kv_namespaces]]
 # binding = "MY_KV_NAMESPACE"
