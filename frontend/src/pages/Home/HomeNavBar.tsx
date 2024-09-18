@@ -4,6 +4,7 @@ import HomeSearchBar from "./HomeSearchBar";
 import ProfileDropDown from "@/utils/ProfileDropDown";
 
 const HomeNavBar = () => {
+  
   return (
     <div className="w-full flex justify-between items-center bg-white px-4 lg:px-6 h-20 border-b ">
       <Link to="/home" className="flex items-center justify-center space-x-2">

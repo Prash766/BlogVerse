@@ -100,7 +100,7 @@
 
 /* Optional: Set full width and height for editor container */
 #editorjs {
-  width: 98%;  /* Ensure it takes full width */
+  width: 86%;  /* Ensure it takes full width */
   margin-left: 100px; /* Align to the left */
   padding-left: 0; /* Ensure no padding for alignment */
   padding-right: 0; /* Full width padding removal */

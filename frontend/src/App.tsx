@@ -5,6 +5,7 @@ import Signup from "./pages/Auth/Signup"
 import Home from "./pages/Home/Home"
 import CreateBlog from "./pages/NewBlog/CreateBlog"
 import ProtectedRoutes from "./utils/ProtectedRoutes"
+import ProfilePage from "./pages/Profile/Profile"
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
       <Route element={<ProtectedRoutes/>}>
       <Route path='/home' element={<Home/>} />
       <Route path='/write' element={<CreateBlog/>}/>
+      <Route path='/profile' element={<ProfilePage/>}/>
       </Route>
     </Routes>
     </BrowserRouter>
