@@ -81,8 +81,8 @@ export default function BlogPage() {
           onClick={() => likeMutation.mutate()}
           // disabled={likeMutation.isLoading}
         >
-          <Heart className={`w-4 h-4 mr-2 ${blogsLiked.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-          {blog.like}
+          <Heart className={`w-4 h-4 mr-2 ${blogsLiked?.isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+          {blog?.like}
         </Button>
         <Button variant="ghost" size="sm">
           <MessageCircle className="w-4 h-4 mr-2" />
@@ -106,7 +106,7 @@ export default function BlogPage() {
       <img 
         src={blog.postImage || "/placeholder.svg?height=400&width=800"} 
         alt={blog.imageAlt || "Blog post image"} 
-        className="w-full h-auto mb-4"
+        className="w-full max-h-auto object-fit mb-4"
       />
       <p className="text-sm text-gray-500 mb-8">{blog.imageCredit}</p>
 
