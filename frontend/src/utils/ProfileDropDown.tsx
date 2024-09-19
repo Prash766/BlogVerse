@@ -1,3 +1,4 @@
+import  { useState } from "react";
 import { ChevronDown, LayoutDashboard, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
@@ -9,13 +10,22 @@ import { useRecoilValue } from "recoil";
 import { userInfo } from "@/atoms/user";
 import { useNavigate } from "react-router-dom";
 import LogoutSkeleton from "./LogoutSkeleton";
-import { useState } from "react";
 import { axiosClient } from "@/axios/axios";
 
 const ProfileDropDown = () => {
   const UserDetails = useRecoilValue(userInfo);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+
+  function handleProfileClick(e:any) {
+    e.preventDefault()
+    console.log("clicked");
+    try {
+      navigate('/profile');
+    } catch (error) {
+      console.error("Navigation failed:", error);
+    }
+  }
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -34,6 +44,7 @@ const ProfileDropDown = () => {
   if (isLoading) return <LogoutSkeleton />;
 
   return (
+    <>
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center space-x-2 group">
         <span className="text-muted-foreground group-hover:text-slate-800">
@@ -42,7 +53,7 @@ const ProfileDropDown = () => {
         <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={(e)=>handleProfileClick(e)}  className="cursor-pointer">
           <User className="mr-2 h-4 w-4" />
           <span>My Profile</span>
         </DropdownMenuItem>
@@ -50,12 +61,14 @@ const ProfileDropDown = () => {
           <LayoutDashboard className="mr-2 h-4 w-4" />
           <span>My Dashboard</span>
         </DropdownMenuItem>
-        <DropdownMenuItem className="cursor-pointer" onClick={handleLogout} disabled={isLoading}>
+        <DropdownMenuItem  className="cursor-pointer" onClick={handleLogout} disabled={isLoading}>
           <LogOut className="mr-2 h-4 w-4" />
           <span>{isLoading ? "Logging out..." : "Logout"}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  
+    </>
   );
 };
 

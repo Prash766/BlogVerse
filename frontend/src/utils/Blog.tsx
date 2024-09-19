@@ -66,10 +66,12 @@
 import React, { ForwardedRef, useState } from "react";
 import { Heart } from "lucide-react";
 
+
 export type Author = {
-  fullName: string;
+  FullName: string;
   email: string;
   id: string;
+  avatar:string
 };
 
 interface PropTypes {
@@ -92,24 +94,21 @@ const Blog = React.forwardRef<HTMLDivElement, PropTypes>(
       }
       setIsLiked(!isLiked);
     };
-
-    // Pseudo title and description
     const pseudoTitle = "The Future of Web Development: Trends to Watch in 2023";
     const pseudoDescription = "This is a fascinating article that delves into the intricacies of modern web development. It explores cutting-edge technologies and best practices that every developer should know. From responsive design to performance optimization, this piece covers it all. Whether you're a seasoned professional or just starting out, you'll find valuable insights here.";
 
     return (
       <div ref={ref} className="cursor-pointer max-w-5xl ml-10 px-6 py-8 border-b border-gray-200">
         <div className="flex flex-col sm:flex-row gap-8 items-center justify-between">
-          {/* Left Section: Title and Description */}
           <div className="flex-1 space-y-5">
-            {/* Author info */}
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200">
-                {/* You can add an author image here if available */}
-              </div>
+            <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden">
+  <img className="object-cover w-full h-full" src={author?.avatar || "" } alt="User Avatar" />
+</div>
+
               <div>
                 <span className="font-semibold text-sm hover:underline cursor-pointer">
-                  {author?.fullName || "John Doe"}
+                  {author?.FullName || "John Doe"}
                 </span>
                 <span className="text-gray-500 text-sm"> in </span>
                 <span className="font-semibold text-sm hover:underline cursor-pointer">
@@ -118,17 +117,14 @@ const Blog = React.forwardRef<HTMLDivElement, PropTypes>(
               </div>
             </div>
 
-            {/* Blog title */}
             <h1 className="font-bold text-2xl sm:text-3xl leading-tight">
               {title || pseudoTitle}
             </h1>
 
-            {/* Description of the Blog */}
             <p className="text-md text-gray-600 line-clamp-3 min-h-[3em]">
               {content || pseudoDescription}
             </p>
 
-            {/* Like button and count */}
             <div className="flex pt-8 items-center gap-2">
               <button
                 onClick={handleLike}
@@ -140,8 +136,6 @@ const Blog = React.forwardRef<HTMLDivElement, PropTypes>(
               </button>
             </div>
           </div>
-
-          {/* Right Section: Image */}
           <div className="w-full sm:w-48 h-48 flex-shrink-0 mt-6 sm:mt-0">
             <img
               src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"

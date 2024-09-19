@@ -2,8 +2,11 @@ import { Edit, PenSquare, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import HomeSearchBar from "./HomeSearchBar";
 import ProfileDropDown from "@/utils/ProfileDropDown";
+import { useRecoilValue } from "recoil";
+import { userInfo } from "@/atoms/user";
 
 const HomeNavBar = () => {
+  const user = useRecoilValue(userInfo)
   
   return (
     <div className="w-full flex justify-between items-center bg-white px-4 lg:px-6 h-20 border-b ">
@@ -37,7 +40,7 @@ const HomeNavBar = () => {
         <Link to="#" className="flex items-center space-x-2 group">
           <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-300">
             <img
-              src="https://via.placeholder.com/150"
+              src={user.avatar}
               alt="Profile Avatar"
               className="w-full h-full object-cover"
             />

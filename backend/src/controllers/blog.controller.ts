@@ -83,6 +83,7 @@ const getAllBlogs = async (c: Context) => {
           id: true,
           FullName: true,
           email: true,
+          avatar:true 
         },
       },
     },
