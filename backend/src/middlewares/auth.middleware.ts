@@ -1,27 +1,34 @@
-import { Context, Next } from "hono";
+import { Context, HonoRequest, Next } from "hono";
 import { verify } from "hono/jwt";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { getCookie } from "hono/cookie";
 
-interface CustomRequest {
-  user?: {
-    id: string;
-    email: string;
-    FullName: string;
-  };
-}
+// interface CustomRequest extends HonoRequest {
+//   user?: {
+//     id: string;
+//     email: string;
+//     FullName: string;
+//     avatar:string | null;
+//   };
+// }
 
-type AppContext = Context<{
-  Bindings: { DATABASE_URL: string; JWT_SECRET: string };
-}> & { req: CustomRequest };
+//  type AppContext = Context<{
+//   Bindings: { DATABASE_URL: string; JWT_SECRET: string };
+// }> & { req: CustomRequest };
+
+// const verifyJWT = async (c: AppContext, next: Next) => {
+
+//   now this is another approach of setting a custom key value pair to context by defining custom 
+//   request and then custom AppContext but if this is the approach that you want to use , u need to export this AppContext and use it everywhere 
+//   you want to use this c.req.user otherwise best is to use the get function on the context object 
 
 type jwtPayload = {
   id: string;
   email: string;
 };
 
-const verifyJWT = async (c: AppContext, next: Next) => {
+const verifyJWT = async (c: Context, next: Next) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
@@ -35,6 +42,7 @@ const verifyJWT = async (c: AppContext, next: Next) => {
       email: true,
       FullName: true,
       id: true,
+      avatar:true
     },
   });
   if (!user) {
@@ -45,11 +53,13 @@ const verifyJWT = async (c: AppContext, next: Next) => {
       400
     );
   }
-  c.req.user = {
-    id: user.id,
-    email: user.email,
+  const User= {
+    id:user.id,
     FullName: user.FullName,
-  };
+    email:user.email,
+    avatar:user.avatar
+  }
+  c.set('user' , User)
 
   await next();
 };
