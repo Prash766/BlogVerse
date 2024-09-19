@@ -19,10 +19,12 @@ interface PropTypes {
   id: string;
   like:any,
   isLikedBlog: boolean
+  description:string,
+  postImage:string
 }
 
 const Blog = forwardRef<HTMLDivElement, PropTypes>(
-  ({ content, title, author, id, like , isLikedBlog }, ref) => {
+  ({ content, title, author, id, like , isLikedBlog , description , postImage }, ref) => {
     const [likes, setLikes] = useState(like);
     const [isLiked, setIsLiked] = useState(isLikedBlog);
     const navigate = useNavigate();
@@ -30,6 +32,7 @@ const Blog = forwardRef<HTMLDivElement, PropTypes>(
     const handleLike = async () => {
       console.log(isLikedBlog)
       try {
+        console.log(id)
         const res = await axiosClient.put('/blog/like', {
           blogId: id,
         });
@@ -77,7 +80,7 @@ const Blog = forwardRef<HTMLDivElement, PropTypes>(
               {title || pseudoTitle}
             </h1>
             <p onClick={handleBlogClick} className="cursor-pointer text-md text-gray-600 line-clamp-3 min-h-[3em]">
-              {content || pseudoDescription}
+              {description || pseudoDescription}
             </p>
             <div className="flex pt-8 items-center gap-2">
               <button
@@ -92,7 +95,7 @@ const Blog = forwardRef<HTMLDivElement, PropTypes>(
           </div>
           <div className="w-full sm:w-48 h-48 flex-shrink-0 mt-6 sm:mt-0">
             <img
-              src="https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"
+              src={postImage || "https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png"}
               alt="Blog Illustration"
               className="w-full h-full object-cover rounded-lg"
             />
