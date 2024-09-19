@@ -20,6 +20,8 @@ model User{
   password String 
   avatar String?
   posts Post[]
+  likedBy PostLiked[] 
+
 }
 
 model Post{
@@ -31,5 +33,17 @@ model Post{
   like Int @default(0)
   createdAt DateTime @default(now())
   author User @relation(fields: [authorId] , references: [id])
+  likedBy PostLiked[] 
   authorId String
+}
+
+model PostLiked {
+  authorId String
+  postId String
+  isLiked Boolean @default(false)
+  post Post @relation(references: [id] , fields: [postId])
+  author User @relation(references: [id] , fields: [authorId])
+
+  @@id([authorId , postId])
+
 }
