@@ -304,7 +304,7 @@
 
 // export default Home;
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import Blog, { Author } from "@/utils/Blog";
@@ -411,6 +411,7 @@ const Home = () => {
     toast.error("Error fetching Blogs");
     return <div>Error loading blogs</div>;
   }
+
 
   return (
     <div className="min-h-screen">

@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export default function LogoutSkeleton() {
   return (
-    <div className="z-200 max-h-screen flex flex-col min-h-screen">
+    <div className="z-400 max-h-screen flex flex-col min-h-screen">
       <header className="px-4 lg:px-6 h-14 flex items-center">
         <div className="flex items-center">
           <Skeleton className="h-8 w-8 mr-2" />
