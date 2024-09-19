@@ -25,6 +25,9 @@ app.use('/api/v1/*' , async(c:Context , next:Next)=>{
 })
 app.use("/api/v1/blog/*", verifyJWT);
 
+
+
+
 app.get("/", (c: Context) => c.text("hello this is the main route"));
 app.route("/api/v1/blog", blogRouter);
 app.route("/api/v1/user", userRouter);

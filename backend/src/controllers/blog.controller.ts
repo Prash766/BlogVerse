@@ -1,7 +1,15 @@
-import { createPostSchema, updatePostSchema } from "@prash766/common-app";
+import { createPostSchema, updatePost, updatePostSchema } from "@prash766/common-app";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { Context } from "hono";
+import { encodeBase64 } from "hono/utils/encode";
+
+
+interface UpdateProfile{
+  FullName: string,
+  userId:string,
+  avatar:File
+}
 
 const newBlog = async (c: Context) => {
   const prisma = new PrismaClient({
@@ -173,6 +181,56 @@ const increaseLike = async (c: Context) => {
   );
 };
 
+const updateUserInfo = async (c: Context) => {
+
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const body  = await c.req.parseBody();
+    console.log(body)
+    const userId = body.id as string
+    const image = body.avatar as File;
+
+    if (image) {
+      const formData = new FormData();
+      formData.append('file', image);  
+      formData.append('upload_preset', 'ml_default'); 
+
+      const cloudinaryResponse = await fetch(`https://api.cloudinary.com/v1_1/${c.env.CLOUDINARY_NAME}/image/upload`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!cloudinaryResponse.ok) {
+        console.log(cloudinaryResponse)
+        throw new Error(`Cloudinary upload failed: ${cloudinaryResponse.statusText}`);
+      }
+
+      const result: any = await cloudinaryResponse.json();
+      console.log(result);
+
+      const insertData: any = {};
+      if (body.FullName) insertData.FullName = body.FullName;
+      if (result.secure_url) insertData.avatar = result.secure_url;
+
+      const user = await prisma.user.update({
+        where: { id: userId},
+        data: insertData,
+      });
+
+      return c.json(user);
+    } else {
+      return c.json({ error: 'No image provided' }, 400);
+    }
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: 'Internal server error' }, 500);
+  }
+};
+
+
 export { newBlog, getAllBlogs, updateBlog, getBlog,
-  increaseLike
+  increaseLike, updateUserInfo
  };

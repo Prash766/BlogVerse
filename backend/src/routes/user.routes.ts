@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { loginUser, logoutUser, userSignup , verifyUser } from "../controllers/user.controller";
+import { updateUserInfo } from "../controllers/blog.controller";
 const userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -14,7 +15,7 @@ userRouter.post("/signup", userSignup);
 
 userRouter.post("/login",loginUser );
 userRouter.get("/logout" , logoutUser )
-
+userRouter.post('/updateProfile' , updateUserInfo)
 
 userRouter.get('/verify' , verifyUser)
 
