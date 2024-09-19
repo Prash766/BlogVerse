@@ -312,6 +312,7 @@ import HomeNavBar from "./HomeNavBar";
 import SkeletonUi from "@/utils/SkeletonUi";
 import { axiosClient } from "@/axios/axios";
 
+
 type BlogType = {
   id: string;
   title: string;
@@ -319,6 +320,9 @@ type BlogType = {
   author: Author;
   published: boolean;
   authorId: string;
+  like:Number,
+  isLiked : boolean
+
 };
 
 const fetchBlogs = async (cursor: string | null) => {
@@ -423,6 +427,9 @@ const Home = () => {
           page.blogs.map((blog: BlogType, blogIndex: number) => (
             <Blog
               key={blog.id}
+              isLikedBlog= {blog.isLiked}
+              id={blog.id}
+              like={blog.like}
               title={blog.title}
               content={blog.content}
               author={blog.author}
