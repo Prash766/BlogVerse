@@ -20,7 +20,10 @@ export const createPostSchema = z.object({
     title:z.string(),
     content:z.string(),
     published:z.boolean(),
-    authorId:z.string().uuid()
+    authorId:z.string().uuid(),
+    description:z.string().max(200 , {message:"The description should be less than 200 characters"}),
+    postImage: z.string()
+
 
 })
 
