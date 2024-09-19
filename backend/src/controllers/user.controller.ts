@@ -5,15 +5,6 @@ import { setCookie } from "hono/cookie";
 import { HTTPException } from "hono/http-exception";
 import { sign, verify } from "hono/jwt";
 import { signinUserSchema, signupInputSchema } from "@prash766/common-app";
-import { JwtTokenExpired } from "hono/utils/jwt/types";
-import { encodeBase64 } from "hono/utils/encode";
-import { v2 as cloudinary } from "cloudinary";
-
-interface UpdateProfile{
-  FullName? :string,
-  userId: string
-}
-
 
 const userSignup = async (c: Context) => {
   const prisma = new PrismaClient({
@@ -33,15 +24,13 @@ const userSignup = async (c: Context) => {
         email: body.email,
         password: body.password,
         FullName: body.FullName,
-        
       },
     });
     const token = await sign(
       {
         id: user.id,
         email: user.email,
-        exp:Math.floor(Date.now() / 1000) +(24 * 60 * 60)
-
+        exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
       },
       c.env.JWT_SECRET
     );
@@ -93,7 +82,7 @@ const loginUser = async (c: Context) => {
       {
         id: user.id,
         email: user.email,
-        exp:Math.floor(Date.now() / 1000) +(24 * 60 * 60)
+        exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60,
       },
       c.env.JWT_SECRET
     );
@@ -103,7 +92,7 @@ const loginUser = async (c: Context) => {
       {
         success: true,
         message: "User logged in",
-        user:user
+        user: user,
       },
       200
     );
@@ -116,63 +105,124 @@ const loginUser = async (c: Context) => {
   }
 };
 
-const verifyUser = async(c:Context)=>{
-  const cookieHeader = c.req.header('Cookie') || "";
+const verifyUser = async (c: Context) => {
+  const cookieHeader = c.req.header("Cookie") || "";
   const token = cookieHeader.split("token=")[1];
   if (!token) {
-    return c.json({
-      success: false,
-      message: "Token not found",
-    }, 400);
-
+    return c.json(
+      {
+        success: false,
+        message: "Token not found",
+      },
+      400
+    );
   }
-  type DecodedToken=  {
+  type DecodedToken = {
     id: string;
     email: string;
     exp?: number; // Optional expiration claim
+  };
+  try {
+    const decodedToken = (await verify(
+      token,
+      c.env.JWT_SECRET
+    )) as DecodedToken;
+    const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+    const user = await prisma.user.findUnique({
+      where: {
+        email: decodedToken.email,
+      },
+    });
+    return c.json(
+      {
+        success: true,
+        message: "User is Authenticated",
+        user: user,
+      },
+      200
+    );
+  } catch (error) {
+    return c.json(
+      {
+        success: false,
+        message: "Invalid Token",
+      },
+      400
+    );
   }
-try {
-   const decodedToken =  (await verify(token , c.env.JWT_SECRET) ) as DecodedToken  
-   const prisma =  new PrismaClient({
-    datasourceUrl:c.env.DATABASE_URL
-   }).$extends(withAccelerate())
-   const user = await prisma.user.findUnique({
-    where:{
-      email: decodedToken.email
+};
+
+const logoutUser = async (c: Context) => {
+  setCookie(c, "token", "");
+  return c.json(
+    {
+      success: true,
+      message: "user logged out successfully",
+    },
+    200
+  );
+};
+
+const updateUserInfo = async (c: Context) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const body = await c.req.parseBody();
+    console.log(body);
+    const userId = body.id as string;
+    const image = body.avatar as File;
+
+    if (image) {
+      const formData = new FormData();
+      formData.append("file", image);
+      formData.append("upload_preset", "ml_default");
+
+      const cloudinaryResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${c.env.CLOUDINARY_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!cloudinaryResponse.ok) {
+        console.log(cloudinaryResponse);
+        throw new Error(
+          `Cloudinary upload failed: ${cloudinaryResponse.statusText}`
+        );
+      }
+
+      const result: any = await cloudinaryResponse.json();
+      console.log(result);
+
+      const insertData: any = {};
+      if (body.FullName) insertData.FullName = body.FullName;
+      if (result.secure_url) insertData.avatar = result.secure_url;
+
+      const user = await prisma.user.update({
+        where: { id: userId },
+        data: insertData,
+      });
+
+      return c.json(
+        {
+          success: true,
+          message: "User profile Updated",
+          user: user,
+        },
+        200
+      );
+    } else {
+      return c.json({ error: "No image provided" }, 400);
     }
-   })
-    return c.json({
-      success:true,
-      message:"User is Authenticated",
-      user:user
+  } catch (error) {
+    console.error(error);
+    return c.json({ error: "Internal server error" }, 500);
+  }
+};
 
-    }, 200)
-  
-} catch (error) {
-  return c.json({
-    success:false,
-    message:"Invalid Token"
-  }, 400)
-  
-}  
-
-
-
-}
-
-const logoutUser = async(c:Context)=>{
-  setCookie(c, 'token' ,"")
-  return c.json({
-    success:true,
-    message:"user logged out successfully"
-
-  }, 200)
-  
-}
-
-
-
-
-
-
-export { userSignup, loginUser , verifyUser , logoutUser };
+export { userSignup, loginUser, verifyUser, logoutUser, updateUserInfo };

@@ -1,6 +1,5 @@
 import { Hono } from "hono";
-import { loginUser, logoutUser, userSignup , verifyUser } from "../controllers/user.controller";
-import { updateUserInfo } from "../controllers/blog.controller";
+import { loginUser, logoutUser, userSignup , verifyUser, updateUserInfo } from "../controllers/user.controller";
 const userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;

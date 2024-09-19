@@ -20,9 +20,9 @@ const blogRouter = new Hono<{
 blogRouter.get("/allBlogs", getAllBlogs);
 blogRouter.post("/newBlog", newBlog);
 
-blogRouter.put("/blog/:id", updateBlog);
+blogRouter.put("/update/:id", updateBlog);
 
-blogRouter.get("/blog/:id", getBlog);
+blogRouter.get("/get/:id", getBlog);
 blogRouter.put("/like", increaseLike);
 
 export default blogRouter;
