@@ -25,7 +25,7 @@ const CreateBlog = () => {
   const handleTextAreaKeyDown = (e: React.KeyboardEvent) => {
     if (e.code === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      editorRef.current?.focus(); // Focus on EditorJS
+      editorRef.current?.focus(); 
     }
   };
 
@@ -62,7 +62,6 @@ const CreateBlog = () => {
             })
             .join("\n");
 
-          // Update content state
           setContent(plainText);
         } catch (error) {
           console.error("Error saving editor content", error);
