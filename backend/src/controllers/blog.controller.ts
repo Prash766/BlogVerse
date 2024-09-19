@@ -220,7 +220,11 @@ const updateUserInfo = async (c: Context) => {
         data: insertData,
       });
 
-      return c.json(user);
+      return c.json({
+        success:true,
+        message:"User profile Updated",
+        user: user
+      },200);
     } else {
       return c.json({ error: 'No image provided' }, 400);
     }
