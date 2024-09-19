@@ -23,6 +23,6 @@ blogRouter.post("/newBlog", newBlog);
 blogRouter.put("/blog/:id", updateBlog);
 
 blogRouter.get("/blog/:id", getBlog);
-blogRouter.post("/blog/like", increaseLike);
+blogRouter.put("/like", increaseLike);
 
 export default blogRouter;
