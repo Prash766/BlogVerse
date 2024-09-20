@@ -1,30 +1,15 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import Blog, { Author } from "@/utils/Blog";
+import Blog from "@/utils/Blog";
 import HomeNavBar from "./HomeNavBar";
 import SkeletonUi from "@/utils/SkeletonUi";
 import { axiosClient } from "@/axios/axios";
 import { Loader } from "lucide-react";
 
-type BlogType = {
-  id: string;
-  title: string;
-  content: string;
-  author: Author;
-  published: boolean;
-  authorId: string;
-  like: Number;
-  isLiked: boolean;
-  description: string;
-  postImage: string;
-};
-
-const fetchBlogs = async (cursor: string | null) => {
+const fetchBlogs = async (cursor:any) => {
   try {
-    const response = await axiosClient.get(
-      `/blog/allBlogs?cursor=${cursor || ""}`
-    );
+    const response = await axiosClient.get(`/blog/allBlogs?cursor=${cursor || ""}`);
     if (response.status === 400) {
       toast.error("Error fetching data");
     }
@@ -49,6 +34,7 @@ const Home = () => {
     isFetchingNextPage,
     status,
     isLoading,
+    refetch,
   } = useInfiniteQuery({
     queryKey: ["blogs"],
     queryFn: ({ pageParam = null }) => fetchBlogs(pageParam),
@@ -56,8 +42,18 @@ const Home = () => {
     getNextPageParam: (lastPage) => lastPage.nextCursor,
   });
 
+  useEffect(() => {
+    const onFocus = () => {
+      refetch();
+    };
+    window.addEventListener('focus', onFocus);
+    return () => {
+      window.removeEventListener('focus', onFocus);
+    };
+  }, [refetch]);
+
   const lastElementRef = useCallback(
-    (node: HTMLDivElement | null) => {
+    (node: HTMLElement | null) => {
       if (isLoading) return;
       if (observer.current) observer.current.disconnect();
       observer.current = new IntersectionObserver((entries) => {
@@ -75,6 +71,7 @@ const Home = () => {
     toast.error("Error fetching Blogs");
     return <div>Error loading blogs</div>;
   }
+
   return (
     <div className="min-h-screen">
       <header>
@@ -82,7 +79,7 @@ const Home = () => {
       </header>
       <main className="flex flex-col space-y-4 p-4">
         {data?.pages.map((page, pageIndex) =>
-          (page.blogs || []).map((blog: BlogType, blogIndex: number) => (
+          (page.blogs || []).map((blog:any, blogIndex:any) => (
             <Blog
               key={blog.id}
               description={blog.description}
