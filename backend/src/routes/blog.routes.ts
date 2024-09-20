@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import {
   getAllBlogs,
   getBlog,
+  getLikeInfo,
   increaseLike,
   newBlog,
   updateBlog,
@@ -24,5 +25,7 @@ blogRouter.put("/update/:id", updateBlog);
 
 blogRouter.get("/get/:id", getBlog);
 blogRouter.put("/like", increaseLike);
+blogRouter.get("/blogLikes/:id", getLikeInfo);
+
 
 export default blogRouter;

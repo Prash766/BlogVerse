@@ -15,37 +15,38 @@ interface UpdateProfile {
   avatar: File;
 }
 
-
 const newBlog = async (c: Context) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const body  = await c.req.parseBody() ;
-  const image = body.postImage as File
-  const description = body.description as string
-  const content= body.content as string
-  const title = body.title as string
-  const authorId = body.authorId as string
-  let blogCoverImage = ""
+  const body = await c.req.parseBody();
+  const image = body.postImage as File;
+  const description = body.description as string;
+  const content = body.content as string;
+  const title = body.title as string;
+  const authorId = body.authorId as string;
+  let blogCoverImage = "";
 
-  if(image){
-    const formData  = new FormData()
-    formData.append('file' , image)
-    formData.append('upload_preset' , 'ml_default')
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${c.env.CLOUDINARY_NAME}/image/upload`,{
-      method:"POST",
-      body: formData
-    })
-    if(!res.ok){
-      console.log(res)
-    throw new HTTPException(400 , {
-      message:`Image upload Failed ${res.statusText}`,
-    
-    })
+  if (image) {
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "ml_default");
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${c.env.CLOUDINARY_NAME}/image/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    if (!res.ok) {
+      console.log(res);
+      throw new HTTPException(400, {
+        message: `Image upload Failed ${res.statusText}`,
+      });
     }
-    const result:any  = await res.json()
-    console.log(result)
-    blogCoverImage = result.secure_url
+    const result: any = await res.json();
+    console.log(result);
+    blogCoverImage = result.secure_url;
   }
 
   const [blog, user] = await Promise.all([
@@ -55,7 +56,7 @@ const newBlog = async (c: Context) => {
         content: content,
         published: true,
         description: description,
-        postImage : blogCoverImage,
+        postImage: blogCoverImage,
         author: {
           connect: {
             id: authorId,
@@ -189,7 +190,7 @@ const updateBlog = async (c: Context) => {
     );
   } catch (error: any) {
     return c.json({
-      message:"Blog wasnt updated",
+      message: "Blog wasnt updated",
     });
   }
 };
@@ -199,29 +200,27 @@ const getBlog = async (c: Context) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const { id } = c.req.param();
-  const userId = c.get('user')
+  const userId = c.get("user");
 
-  const [blog , blogsLiked] = await Promise.all([ prisma.post.findUnique({
-    where: {
-      id: id,
-    },
-
-  }),
-  prisma.postLiked.findUnique({
-    where:{
-      authorId_postId:{
-        authorId:userId.id,
-        postId:id
-      }
-    }
-  })
-]
-);
+  const [blog, blogsLiked] = await Promise.all([
+    prisma.post.findUnique({
+      where: {
+        id: id,
+      },
+    }),
+    prisma.postLiked.findUnique({
+      where: {
+        authorId_postId: {
+          authorId: userId.id,
+          postId: id,
+        },
+      },
+    }),
+  ]);
   return c.json({
     success: true,
     blog: blog,
-    blogsLiked
-
+    blogsLiked,
   });
 };
 
@@ -230,7 +229,7 @@ const increaseLike = async (c: Context) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const { blogId } = await c.req.json();
-  console.log(blogId)
+  console.log(blogId);
   const userInfo = c.get("user");
 
   try {
@@ -314,12 +313,40 @@ const increaseLike = async (c: Context) => {
   }
 };
 
+const getLikeInfo = async (c: Context) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  const {  id} = c.req.param();
+  const user = c.get("user");
 
+  const [blogLikeCount, blogIsLiked] = await Promise.all([
+    prisma.post.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        like: true,
+      },
+    }),
+    prisma.postLiked.findUnique({
+      where: {
+        authorId_postId: {
+          authorId: user.id,
+          postId: id ,
+        },
+      },
+    }),
+  ]);
 
-export {
-  newBlog,
-  getAllBlogs,
-  updateBlog,
-  getBlog,
-  increaseLike,
+  return c.json(
+    {
+      success: true,
+      like: blogLikeCount,
+      isLiked: blogIsLiked,
+    },
+    200
+  );
 };
+
+export { newBlog, getAllBlogs, updateBlog, getBlog, increaseLike, getLikeInfo };
