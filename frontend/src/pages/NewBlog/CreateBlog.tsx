@@ -10,6 +10,10 @@ import { toast } from "sonner";
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import InlineCode from "@editorjs/inline-code";
+import { EDITOR_JS_TOOLS } from "./tools";
+import editorjsHTML from "editorjs-html";
+
+
 
 const CreateBlog = () => {
   const navigate = useNavigate();
@@ -21,6 +25,7 @@ const CreateBlog = () => {
   const User = useRecoilValue(userInfo);
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const editorRef = useRef<EditorJS | null>(null);
+  const edjsParser  = editorjsHTML()
 
   const handleTextAreaKeyDown = (e: React.KeyboardEvent) => {
     if (e.code === "Enter" && !e.shiftKey) {
@@ -30,21 +35,13 @@ const CreateBlog = () => {
   };
 
   useEffect(() => {
+
     const editor = new EditorJS({
       holder: "editorjs",
-      inlineToolbar: ["italic", "bold"],
+      inlineToolbar: ["italic", "bold", "link"],
       placeholder: "Tell Your Story....",
-      tools: {
-        header: {
-          //@ts-ignore
-          class: Header,
-          inlineToolbar: ["link"],
-          shortcut: "CMD+SHIFT+H",
-        },
-        inlineCode: {
-          class: InlineCode,
-        },
-      },
+      //@ts-ignore
+      tools: EDITOR_JS_TOOLS,
       onReady: () => {
         editorRef.current = editor;
       },
@@ -53,16 +50,7 @@ const CreateBlog = () => {
         try {
           const outputData = await editor.save();
           console.log("EditorJS Output Data:", outputData);
-          const plainText = outputData.blocks
-            .map((block) => {
-              if (block.type === "paragraph" || block.type === "header") {
-                return block.data.text;
-              }
-              return "";
-            })
-            .join("\n");
-
-          setContent(plainText);
+            setContent(JSON.stringify(outputData));  // Store as JSON string for easy backend handling
         } catch (error) {
           console.error("Error saving editor content", error);
         }
@@ -147,5 +135,6 @@ const CreateBlog = () => {
 };
 
 export default CreateBlog;
+
 
 

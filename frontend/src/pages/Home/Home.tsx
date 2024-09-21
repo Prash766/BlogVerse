@@ -13,6 +13,7 @@ const fetchBlogs = async (cursor:any) => {
     if (response.status === 400) {
       toast.error("Error fetching data");
     }
+    console.log(response.data)
     return {
       blogs: response.data.blog || [],
       nextCursor: response.data.cursor || null,
@@ -39,7 +40,13 @@ const Home = () => {
     queryKey: ["blogs"],
     queryFn: ({ pageParam = null }) => fetchBlogs(pageParam),
     initialPageParam: null,
-    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    getNextPageParam: (lastPage) => {
+      if (lastPage && lastPage.nextCursor) {
+        return lastPage.nextCursor;
+      }
+      return undefined
+    
+    }
   });
 
   useEffect(() => {

@@ -106,3 +106,15 @@
   padding-right: 0; /* Full width padding removal */
 }
 
+.prose a {
+  color: #3b82f6;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  text-decoration: none;
+}
+a {
+  text-decoration: none;
+}
+

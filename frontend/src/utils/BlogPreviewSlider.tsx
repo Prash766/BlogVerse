@@ -77,11 +77,8 @@ export default function BlogPreviewSlider({
           !Array.isArray(oldData.pages) ||
           oldData.pages.length === 0
         ) {
-          // If there's no existing data or invalid structure, create a new one
           return { pages: [{ blogs: [newBlog] }] };
         }
-
-        // Update the first page's blogs array
         const updatedPages = [...oldData.pages];
         if (updatedPages[0] && Array.isArray(updatedPages[0].blogs)) {
           updatedPages[0] = {
@@ -89,7 +86,6 @@ export default function BlogPreviewSlider({
             blogs: [newBlog, ...updatedPages[0].blogs],
           };
         } else {
-          // If the structure is unexpected, create a new first page
           updatedPages[0] = { blogs: [newBlog] };
         }
 

@@ -9,6 +9,7 @@ export default {
   theme: {
   	extend: {
 		spacing: {
+			'100':'50rem',
         '84': '22rem',  // Adjust the value as needed
         '87': '21.75rem' // Adjust the value as needed
       },
