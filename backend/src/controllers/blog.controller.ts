@@ -1,13 +1,12 @@
 import {
-  createPostSchema,
-  updatePost,
   updatePostSchema,
 } from "@prash766/common-app";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import axios from "axios";
 import { Context } from "hono";
 import { HTTPException } from "hono/http-exception";
-import { encodeBase64 } from "hono/utils/encode";
+import * as cheerio from "cheerio";
 
 interface UpdateProfile {
   FullName: string;
@@ -72,6 +71,7 @@ const newBlog = async (c: Context) => {
         FullName: true,
       },
     }),
+   
   ]);
 
   return c.json(
@@ -217,10 +217,13 @@ const getBlog = async (c: Context) => {
       },
     }),
   ]);
+  const isBlogLiked = blogsLiked ? blogsLiked.isLiked : false
   return c.json({
     success: true,
     blog: blog,
     blogsLiked,
+    isBlogLiked
+    
   });
 };
 
@@ -229,11 +232,9 @@ const increaseLike = async (c: Context) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const { blogId } = await c.req.json();
-  console.log(blogId);
   const userInfo = c.get("user");
 
   try {
-    console.log("CHECKING THE BLOG ID", blogId);
     const existingLike = await prisma.postLiked.findUnique({
       where: {
         authorId_postId: {
@@ -242,13 +243,11 @@ const increaseLike = async (c: Context) => {
         },
       },
     });
-    console.log("here the liked before UPDATING", existingLike?.isLiked);
+
     if (existingLike && existingLike.isLiked) {
       const [updatedBlog, updatedBlogLike] = await Promise.all([
         prisma.post.update({
-          where: {
-            id: blogId,
-          },
+          where: { id: blogId },
           data: {
             like: {
               decrement: 1,
@@ -267,10 +266,16 @@ const increaseLike = async (c: Context) => {
           },
         }),
       ]);
-      console.log(
-        "After update THE UPDATED BLOG LIKE",
-        updatedBlogLike.isLiked
-      );
+
+      // Ensure like count doesn't go negative
+      if (updatedBlog.like < 0) {
+        updatedBlog.like = 0;
+        await prisma.post.update({
+          where: { id: blogId },
+          data: { like: 0 },
+        });
+      }
+
       return c.json(
         {
           success: true,
@@ -280,10 +285,6 @@ const increaseLike = async (c: Context) => {
         200
       );
     } else {
-      console.log(
-        "the else part where the value is false",
-        existingLike?.isLiked
-      );
       const [updatedBlog, updatedBlogLiked] = await Promise.all([
         prisma.post.update({
           where: { id: blogId },
@@ -295,10 +296,7 @@ const increaseLike = async (c: Context) => {
           create: { authorId: userInfo.id, postId: blogId, isLiked: true },
         }),
       ]);
-      console.log(
-        " else part - AFTER UPDATING  the post ",
-        updatedBlogLiked.isLiked
-      );
+
       return c.json(
         {
           success: true,
@@ -310,6 +308,7 @@ const increaseLike = async (c: Context) => {
     }
   } catch (error) {
     console.log(error);
+    return c.json({ success: false, error: "Failed to update like" }, 500);
   }
 };
 
@@ -317,7 +316,7 @@ const getLikeInfo = async (c: Context) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const {  id} = c.req.param();
+  const { id } = c.req.param();
   const user = c.get("user");
 
   const [blogLikeCount, blogIsLiked] = await Promise.all([
@@ -333,7 +332,7 @@ const getLikeInfo = async (c: Context) => {
       where: {
         authorId_postId: {
           authorId: user.id,
-          postId: id ,
+          postId: id,
         },
       },
     }),
@@ -349,4 +348,121 @@ const getLikeInfo = async (c: Context) => {
   );
 };
 
-export { newBlog, getAllBlogs, updateBlog, getBlog, increaseLike, getLikeInfo };
+const uploadFile = async (c: Context) => {
+  try {
+    const formData = await c.req.parseBody();
+
+    const image = formData.image as File;
+    if (!image) {
+      throw new HTTPException(404, {
+        message: "File wasnt found",
+      });
+    }
+    if (image) {
+      const form = new FormData();
+      form.append("file", image);
+      form.append("upload_preset", "ml_default"); // Correct spelling
+      const res = await fetch(
+        `https://api.cloudinary.com/v1_1/${c.env.CLOUDINARY_NAME}/image/upload`,
+        {
+          method: "POST",
+          body: form,
+        }
+      );
+      console.log(res);
+      if (!res.ok) {
+        console.log(res);
+        throw new HTTPException(400, {
+          message: "File wasnt Uploaded , Something went wrong",
+        });
+      }
+
+      const result: any = await res.json();
+      const imageUrl = result.secure_url;
+      return c.json({
+        success: 1,
+        file: {
+          url: imageUrl,
+        },
+      });
+    }
+  } catch (error) {
+    console.log(error);
+
+    return c.json({
+      success: false,
+      message: "something went wrong",
+    });
+  }
+};
+
+const uploadByURL = async (c: Context) => {
+  const { url } = await c.req.json();
+  if (!url)
+    throw new HTTPException(400, {
+      message: "No URL provided",
+    });
+  return c.json(
+    {
+      success: 1,
+      file: {
+        url: url,
+      },
+    },
+    200
+  );
+};
+
+
+const isValidUrl = (url:string) => {
+  const regex = /^(https?:\/\/[^\s$.?#].[^\s]*)$/i; // Basic URL regex
+  return regex.test(url);
+};
+
+const linkFetching = async (c: Context) => {
+  const url = c.req.query('url')
+  
+  if (!url) throw new HTTPException(400, { message: "No URL provided" });
+  
+  if (!isValidUrl(url)) {
+    throw new HTTPException(400, { message: "Invalid or untrusted URL" });
+  }
+
+  try {
+    const response = await axios.get(url, { timeout: 5000 }); // 5-second timeout
+    const html = response.data;
+
+    const $ = cheerio.load(html);
+    const title = $('head title').text() || '';
+    const description = $('meta[name="description"]').attr('content') || '';
+    const imageUrl = $('meta[property="og:image"]').attr('content') || '';
+
+    return c.json({
+      success: 1,
+      link: url,
+      meta: {
+        title,
+        description,
+        image: {
+          url: imageUrl,
+        },
+      },
+    }, 200);
+  } catch (error) {
+    console.error(error);
+    throw new HTTPException(500, { message: "Error fetching link data" });
+  }
+};
+
+
+export {
+  newBlog,
+  getAllBlogs,
+  updateBlog,
+  getBlog,
+  increaseLike,
+  getLikeInfo,
+  uploadFile,
+  uploadByURL,
+  linkFetching
+};

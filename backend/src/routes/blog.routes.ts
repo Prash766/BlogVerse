@@ -6,6 +6,8 @@ import {
   increaseLike,
   newBlog,
   updateBlog,
+  uploadByURL,
+  uploadFile,
 } from "../controllers/blog.controller";
 
 const blogRouter = new Hono<{
@@ -20,6 +22,8 @@ const blogRouter = new Hono<{
 
 blogRouter.get("/allBlogs", getAllBlogs);
 blogRouter.post("/newBlog", newBlog);
+blogRouter.post("/uploadFile", uploadFile);
+blogRouter.post("/fetchUrl", uploadByURL);
 
 blogRouter.put("/update/:id", updateBlog);
 
