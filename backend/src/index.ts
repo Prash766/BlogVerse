@@ -5,6 +5,7 @@ import userRouter from "./routes/user.routes";
 import { errorMiddleware } from "./middlewares/error";
 import { verifyJWT } from "./middlewares/auth.middleware";
 import {cors} from 'hono/cors'
+import { linkFetching } from "./controllers/blog.controller";
 
 
 
@@ -29,6 +30,7 @@ app.use("/api/v1/blog/*", verifyJWT);
 
 
 app.get("/", (c: Context) => c.text("hello this is the main route"));
+app.get('api/v1/linkInfo' , linkFetching)
 app.route("/api/v1/blog", blogRouter);
 app.route("/api/v1/user", userRouter);
 
