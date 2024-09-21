@@ -8,10 +8,13 @@
     "@prash766/common-app": "^1.0.2",
     "@prisma/client": "^5.19.1",
     "@prisma/extension-accelerate": "^1.1.0",
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
     "cloudinary": "^2.5.0",
     "hono": "^4.6.1",
     "multer": "^1.4.5-lts.1",
-    "prisma": "^5.19.1"
+    "prisma": "^5.19.1",
+    "socket.io": "^4.7.5"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240529.0",
