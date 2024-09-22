@@ -81,9 +81,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen">
-      <header>
-        <HomeNavBar />
-      </header>
+  
       <main className="flex flex-col space-y-4 p-4">
         {data?.pages.map((page, pageIndex) =>
           (page.blogs || []).map((blog:any, blogIndex:any) => (

@@ -9,6 +9,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import BlogPage from "./pages/Blog/BlogPage";
 import { Suspense } from "react";
 import { Skeleton } from "./components/ui/skeleton";
+import Layout from "./utils/Layout";
 
 function App() {
   return (
@@ -19,6 +20,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route element={<ProtectedRoutes />}>
+          <Route element={<Layout />}>
+
+
             <Route
               path="/home"
               element={
@@ -27,11 +31,12 @@ function App() {
                   <Home />
                 </Suspense>
               }
-            />
+              />
 
+            <Route path="/blog/:id" element={<BlogPage />} />
+            </Route>
             <Route path="/write" element={<CreateBlog />} />
             <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/blog/:id" element={<BlogPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

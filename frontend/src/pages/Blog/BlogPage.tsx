@@ -248,7 +248,6 @@ export default function BlogPage() {
 
   const { blog, blogsLiked, isBlogLiked } = data;
 
-  // Parse content from JSON format
   const parsedContent = JSON.parse(blog.content);
   console.log(parsedContent);
 
