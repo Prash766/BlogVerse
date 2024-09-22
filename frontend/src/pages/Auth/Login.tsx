@@ -20,25 +20,42 @@ export default function Login() {
   const navigate = useNavigate();
 
   async function handleLogin(e: React.MouseEvent) {
+    e.preventDefault();
     setIsLoading(true);
+    
     const data: SigninType = {
       email,
       password,
     };
-    e.preventDefault();
-    const response = await axiosClient.post("/user/login", data);
-    console.log(response);
-    if (response.status === 200) {
-      toast.success("Logged In");
-      navigate("/home", { replace: true });
-      console.log(response.data.user);
-      setAuthState(true);
-      setUserInfo(response.data.user);
-    } else {
-      setIsLoading(false);
-      toast.error("Something went wrong");
+  
+    try {
+      const response = await axiosClient.post("/user/login", data);
+  
+      if (response.status === 200) {
+        toast.success("Logged In");
+        setAuthState(true);
+        setUserInfo(response.data.user);
+        navigate("/home", { replace: true });
+      }
+    } catch (error: any) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          if (error.response.data.message === "invalid Password") {
+            toast.error("Enter Correct Password");
+          } else {
+            toast.error("Something went wrong");
+          }
+        } else {
+          toast.error(`Error: ${error.response.status} - ${error.response.statusText}`);
+        }
+      } else {
+        toast.error("Network error or server issue");
+      }
+    } finally {
+      setIsLoading(false); 
     }
   }
+  
 
   return (
     <div className="flex flex-col min-h-screen">

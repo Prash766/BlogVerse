@@ -79,7 +79,7 @@ const loginUser = async (c: Context) => {
     if (password !== user?.password)
       return c.json({
         message: "invalid Password",
-      });
+      },400);
     const token = await sign(
       {
         id: user.id,
