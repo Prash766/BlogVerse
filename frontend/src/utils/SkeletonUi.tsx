@@ -4,23 +4,21 @@ import {Search } from 'lucide-react'
 export default function SkeletonUi() {
   return (
     <div className="z-200 min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b">
+      {/* <header className="border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
-          <Skeleton className="h-8 w-32" /> {/* Medium logo */}
+          <Skeleton className="h-8 w-32" />
           <div className="flex items-center space-x-4">
             <div className="hidden sm:flex items-center space-x-2 bg-gray-100 rounded-full px-4 py-2">
               <Search className="h-5 w-5 text-gray-400" />
-              <Skeleton className="h-4 w-32" /> {/* Search placeholder */}
+              <Skeleton className="h-4 w-32" /> 
             </div>
-            <Skeleton className="h-8 w-8 rounded-full" /> {/* Write icon */}
-            <Skeleton className="h-8 w-8 rounded-full" /> {/* Notifications icon */}
-            <Skeleton className="h-8 w-8 rounded-full" /> {/* User avatar */}
+            <Skeleton className="h-8 w-8 rounded-full" /> 
+            <Skeleton className="h-8 w-8 rounded-full" />
+            <Skeleton className="h-8 w-8 rounded-full" />
           </div>
         </div>
-      </header>
+      </header> */}
 
-      {/* Navigation */}
       <nav className="border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 flex items-center space-x-4 overflow-x-auto">
           <Skeleton className="h-6 w-16" />
@@ -31,10 +29,8 @@ export default function SkeletonUi() {
         </div>
       </nav>
 
-      {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left column - Blog posts */}
           <div className="lg:w-2/3 space-y-8">
             {[...Array(3)].map((_, i) => (
               <div key={i} className="flex flex-col sm:flex-row gap-4">
@@ -56,7 +52,6 @@ export default function SkeletonUi() {
             ))}
           </div>
 
-          {/* Right column */}
           <div className="lg:w-1/3 space-y-8">
             <div className="space-y-4">
               <Skeleton className="h-6 w-32" />
@@ -69,7 +64,7 @@ export default function SkeletonUi() {
                   <Skeleton className="h-4 w-full" />
                 </div>
               ))}
-              <Skeleton className="h-4 w-24" /> {/* See full list */}
+              <Skeleton className="h-4 w-24" />
             </div>
 
             <div className="bg-blue-50 p-4 rounded-lg space-y-4">

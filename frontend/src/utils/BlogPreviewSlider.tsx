@@ -140,11 +140,11 @@ export default function BlogPreviewSlider({
     >
       <div className="bg-background flex-grow overflow-y-auto">
         <div className="max-w-6xl mx-auto p-6 h-full relative">
-          <CircleX
+          {/* <CircleX
             onClick={() => setIsOpen(false)}
             className="cursor-pointer absolute sm:right-6 md:hidden "
             size={30}
-          />
+          /> */}
           <div className="flex flex-col md:flex-row gap-6 h-full">
             <div className="w-full md:w-2/3 space-y-6">
               <div>
