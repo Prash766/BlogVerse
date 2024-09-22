@@ -4,8 +4,10 @@ import Card from "./Card";
 import { ArrowRight } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import Footer from "@/utils/Footer";
+import { useNavigate } from "react-router-dom";
 
 const LandingPage = () => {
+  const navigate = useNavigate()
   return (
     <>
       <NavBar />
@@ -19,10 +21,11 @@ const LandingPage = () => {
               Your universe of thoughts, one post at a time
             </h3>
             <div className="flex justify-center space-x-4">
-              <Button className="py-2 px-6 md:px-8 lg:px-10">
+              <Button onClick={(e)=> navigate('/write')} className="py-2 px-6 md:px-8 lg:px-10">
                 Start Writing
               </Button>
               <Button
+              onClick={()=> navigate('/home')}
                 variant="outline"
                 className="bg-white text-black py-2 px-6 hover:bg-gray-200 md:px-8 lg:px-10"
               >

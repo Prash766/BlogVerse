@@ -23,8 +23,8 @@ export default function ProfilePage() {
   const userDetails = useRecoilValue(userInfo);
 
   const user = {
-    phone: "123-456-7890",
-    location: "New York, USA",
+    phone: "8834737432",
+    location: "Delhi, India",
     occupation: "Software Engineer",
     bio: "Passionate developer",
   };

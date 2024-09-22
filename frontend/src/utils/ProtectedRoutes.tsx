@@ -3,6 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 import { isAuthenticated, userInfo } from '@/atoms/user';
 import { axiosClient } from '@/axios/axios';
+import { toast } from 'sonner';
 
 const ProtectedRoutes = () => {
   const [isAuth, setIsAuth] = useRecoilState(isAuthenticated);
@@ -21,6 +22,7 @@ const ProtectedRoutes = () => {
         }
       } catch (error) {
         setIsAuth(false);
+        toast.error("Please Login or SignUp ")
         localStorage.removeItem('authState'); 
       }
     };
