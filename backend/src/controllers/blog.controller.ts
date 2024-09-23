@@ -455,6 +455,39 @@ const linkFetching = async (c: Context) => {
 };
 
 
+const getUserBlogs = async(c:Context)=>{
+  const prisma = new PrismaClient({
+    datasourceUrl:c.env.DATABASE_URL
+  }).$extends(withAccelerate())
+  const user = c.get('user')
+  const blogs = await prisma.post.findMany({
+    where:{
+      authorId:user.id
+
+    }, 
+    select:{
+      id:true,
+      title:true,
+      description:true,
+      postImage:true,
+      like:true,
+      createdAt:true
+
+    },
+    orderBy:{
+      createdAt: 'desc'
+    }
+  })
+  
+return c.json({
+  success:true,
+  blogs
+}, 200)
+
+
+}
+
+
 export {
   newBlog,
   getAllBlogs,
@@ -464,5 +497,6 @@ export {
   getLikeInfo,
   uploadFile,
   uploadByURL,
-  linkFetching
+  linkFetching,
+  getUserBlogs
 };

@@ -3,6 +3,7 @@ import {
   getAllBlogs,
   getBlog,
   getLikeInfo,
+  getUserBlogs,
   increaseLike,
   newBlog,
   updateBlog,
@@ -30,6 +31,7 @@ blogRouter.put("/update/:id", updateBlog);
 blogRouter.get("/get/:id", getBlog);
 blogRouter.put("/like", increaseLike);
 blogRouter.get("/blogLikes/:id", getLikeInfo);
+blogRouter.get("/userBlog", getUserBlogs);
 
 
 export default blogRouter;

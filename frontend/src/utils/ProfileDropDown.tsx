@@ -57,7 +57,10 @@ const ProfileDropDown = () => {
           <User className="mr-2 h-4 w-4" />
           <span>My Profile</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={(e)=> {
+          e.preventDefault()
+          navigate('/dashboard')
+        }}>
           <LayoutDashboard className="mr-2 h-4 w-4" />
           <span>My Dashboard</span>
         </DropdownMenuItem>
