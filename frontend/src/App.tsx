@@ -10,6 +10,7 @@ import BlogPage from "./pages/Blog/BlogPage";
 import { Suspense } from "react";
 import { Skeleton } from "./components/ui/skeleton";
 import Layout from "./utils/Layout";
+import DashBoard from "./pages/Dashboard/DashBoard";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
               />
 
             <Route path="/blog/:id" element={<BlogPage />} />
+            <Route path="/dashboard" element={<DashBoard />} />
             </Route>
             <Route path="/write" element={<CreateBlog />} />
             <Route path="/profile" element={<ProfilePage />} />
