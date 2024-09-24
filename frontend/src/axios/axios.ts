@@ -1,6 +1,6 @@
 import axios from "axios";
 
 export const axiosClient = axios.create({
-    baseURL:"http://localhost:8787/api/v1",
+    baseURL:"https://backend.prash2339.workers.dev/api/v1",
     withCredentials:true
 })

@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState } from "react";
 import { ChevronDown, LayoutDashboard, LogOut, User } from "lucide-react";
 import {
   DropdownMenu,
@@ -16,12 +16,15 @@ const ProfileDropDown = () => {
   const UserDetails = useRecoilValue(userInfo);
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  function handleProfileClick(e:any) {
-    e.preventDefault()
-    console.log("clicked");
+  const closeDropdown = () => setIsOpen(false);
+
+  function handleProfileClick(e:React.MouseEvent) {
+    e.preventDefault();
     try {
-      navigate('/profile');
+      navigate("/profile");
+      closeDropdown(); // Close dropdown after clicking
     } catch (error) {
       console.error("Navigation failed:", error);
     }
@@ -30,10 +33,11 @@ const ProfileDropDown = () => {
   const handleLogout = async () => {
     setIsLoading(true);
     try {
-      const res = await axiosClient.get('/user/logout');
+      const res = await axiosClient.get("/user/logout");
       if (res.status === 200) {
-        navigate('/', { replace: true });
+        navigate("/", { replace: true });
       }
+      closeDropdown(); // Close dropdown after logout
     } catch (error) {
       console.error("Logout failed:", error);
     } finally {
@@ -45,32 +49,44 @@ const ProfileDropDown = () => {
 
   return (
     <>
-    <DropdownMenu>
-      <DropdownMenuTrigger className="flex items-center space-x-2 group">
-        <span className="text-muted-foreground group-hover:text-slate-800">
-          {UserDetails.FullName}
-        </span>
-        <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300" />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={(e)=>handleProfileClick(e)}  className="cursor-pointer">
-          <User className="mr-2 h-4 w-4" />
-          <span>My Profile</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={(e)=> {
-          e.preventDefault()
-          navigate('/dashboard')
-        }}>
-          <LayoutDashboard className="mr-2 h-4 w-4" />
-          <span>My Dashboard</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem  className="cursor-pointer" onClick={handleLogout} disabled={isLoading}>
-          <LogOut className="mr-2 h-4 w-4" />
-          <span>{isLoading ? "Logging out..." : "Logout"}</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  
+      <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
+        <DropdownMenuTrigger className="flex items-center space-x-2 group">
+          <span className="text-muted-foreground group-hover:text-slate-800">
+            {UserDetails.FullName}
+          </span>
+          <ChevronDown className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors duration-300" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={(e) => {
+              handleProfileClick(e);
+            }}
+            className="cursor-pointer"
+          >
+            <User className="mr-2 h-4 w-4" />
+            <span>My Profile</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate("/dashboard");
+              closeDropdown(); // Close dropdown after clicking dashboard
+            }}
+          >
+            <LayoutDashboard className=" mr-2 h-4 w-4" />
+            <span>My Dashboard</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={handleLogout}
+            disabled={isLoading}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            <span>{isLoading ? "Logging out..." : "Logout"}</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </>
   );
 };
