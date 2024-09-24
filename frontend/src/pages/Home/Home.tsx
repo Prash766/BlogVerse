@@ -2,7 +2,6 @@ import { useEffect, useRef, useCallback } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 import Blog from "@/utils/Blog";
-import HomeNavBar from "./HomeNavBar";
 import SkeletonUi from "@/utils/SkeletonUi";
 import { axiosClient } from "@/axios/axios";
 import { Loader } from "lucide-react";

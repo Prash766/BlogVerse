@@ -27,7 +27,7 @@ interface PropTypes {
 }
 
 const Blog = forwardRef<HTMLDivElement, PropTypes>(
-  ({ content, title, author, id, like, isLikedBlog, description, postImage }, ref) => {
+  ({  title, author, id, like, isLikedBlog, description, postImage }, ref) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
         const [localLikeCount, setLocalLikeCount] = useState(like);
@@ -69,7 +69,7 @@ const Blog = forwardRef<HTMLDivElement, PropTypes>(
 
         return { previousBlogs };
       },
-      onError: (err, variables, context) => {
+      onError: (err, _, context) => {
         console.error(err);
         setLocalIsLiked(!localIsLiked);
         setLocalLikeCount(prevCount => localIsLiked ? prevCount + 1 : prevCount - 1);

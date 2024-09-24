@@ -11,7 +11,6 @@ import {
   X,
   Plus,
   Image as ImageIcon,
-  CircleX,
   ChevronDown,
 } from "lucide-react";
 import { axiosClient } from "@/axios/axios";

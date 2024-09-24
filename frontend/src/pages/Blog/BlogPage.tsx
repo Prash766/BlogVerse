@@ -1,5 +1,4 @@
-import React, { useEffect, useRef } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosClient } from "@/axios/axios";
 import { toast } from "sonner";
@@ -17,9 +16,15 @@ import {
 import { useRecoilValue } from "recoil";
 import { userInfo } from "@/atoms/user";
 import BlogPageSkeleton from "@/utils/BlogPageSkeleton";
-import EditorJS from "@editorjs/editorjs";
 
 import DOMPurify from "dompurify";
+
+interface LikeMutationContext {
+  previousBlogs: any; 
+  previousBlogData: any; 
+}
+
+
 
 interface BlockData {
   text?: string;
@@ -179,8 +184,7 @@ export default function BlogPage() {
   const { id } = useParams<{ id: string }>();
   const user = useRecoilValue(userInfo);
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  const editorRef = useRef<EditorJS | null>(null);
+ 
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["blog", id],
@@ -189,7 +193,7 @@ export default function BlogPage() {
 
   const likeMutation = useMutation({
     mutationFn: () => toggleLike(id!),
-    onMutate: async () => {
+    onMutate: async ():Promise<LikeMutationContext> => {
       await queryClient.cancelQueries({ queryKey: ["blogs"] });
       await queryClient.cancelQueries({ queryKey: ["blog", id] });
 
@@ -231,7 +235,7 @@ export default function BlogPage() {
 
       return { previousBlogs, previousBlogData };
     },
-    onError: (err, variables, context) => {
+    onError: (err,_,  context: LikeMutationContext | undefined) => {
       console.log(err);
       queryClient.setQueryData(["blogs"], context?.previousBlogs);
       queryClient.setQueryData(["blog", id], context?.previousBlogData);
@@ -246,7 +250,7 @@ export default function BlogPage() {
   if (isLoading) return <BlogPageSkeleton />;
   if (isError) return <div>Error fetching blog</div>;
 
-  const { blog, blogsLiked, isBlogLiked } = data;
+  const { blog,  isBlogLiked } = data;
 
   const parsedContent = JSON.parse(blog.content);
   console.log(parsedContent);

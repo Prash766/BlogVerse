@@ -1,17 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { blogInfo, Loading, PublishButtonClicked } from "@/atoms/blog";
+import { Loading, PublishButtonClicked } from "@/atoms/blog";
 import { userInfo } from "@/atoms/user";
 import BlogPreviewSlider from "@/utils/BlogPreviewSlider";
 import { Button } from "@/components/ui/button";
 import SkeletonUi from "@/utils/SkeletonUi";
 import { toast } from "sonner";
 import EditorJS from "@editorjs/editorjs";
-import Header from "@editorjs/header";
-import InlineCode from "@editorjs/inline-code";
 import { EDITOR_JS_TOOLS } from "./tools";
-import editorjsHTML from "editorjs-html";
 
 
 
@@ -25,7 +22,6 @@ const CreateBlog = () => {
   const User = useRecoilValue(userInfo);
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const editorRef = useRef<EditorJS | null>(null);
-  const edjsParser  = editorjsHTML()
 
   const handleTextAreaKeyDown = (e: React.KeyboardEvent) => {
     if (e.code === "Enter" && !e.shiftKey) {
