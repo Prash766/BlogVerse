@@ -1,5 +1,4 @@
-import { atom, selector } from "recoil";
-import { axiosClient } from "@/axios/axios";
+import { atom } from "recoil";
 
 export const userInfo = atom<any>({
   key: "UserInfoAtom",

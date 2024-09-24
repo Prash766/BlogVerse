@@ -13,7 +13,6 @@ export default function DashBoard() {
   const {
     data: blogPosts,
     isLoading,
-    isSuccess,
   } = useQuery({
     queryKey: ["userBlog"],
     queryFn: fetchBlog,

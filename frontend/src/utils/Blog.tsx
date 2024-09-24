@@ -43,11 +43,8 @@ const Blog = forwardRef<HTMLDivElement, PropTypes>(
         return res.data;
       },
       onMutate: async () => {
-        // Optimistically update local state
         setLocalIsLiked(!localIsLiked);
         setLocalLikeCount(prevCount => localIsLiked ? prevCount - 1 : prevCount + 1);
-
-        // Cancel any outgoing refetches
         await queryClient.cancelQueries({ queryKey: ["blogs"] });
         const previousBlogs = queryClient.getQueryData(["blogs"]);
 

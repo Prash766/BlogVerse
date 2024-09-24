@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState(userDetails.FullName);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [avatar, setAvatar] = useState(userDetails.avatar);
-  const { isLoading, updateProfile } = useUpdateProfile(fullName, avatarFile);
+  const { isLoading, updateProfile } = useUpdateProfile();
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

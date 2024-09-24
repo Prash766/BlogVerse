@@ -4,7 +4,7 @@ import { toast } from "sonner" // Ensure this path is correct
 import { useRecoilState } from 'recoil'
 import { userInfo } from '@/atoms/user'
 
-const useUpdateProfile = (fullname: string, avatar: File | string | null) => {
+const useUpdateProfile = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [user , setUser] = useRecoilState(userInfo)
 

@@ -21,7 +21,7 @@ const LandingPage = () => {
               Your universe of thoughts, one post at a time
             </h3>
             <div className="flex justify-center space-x-4">
-              <Button onClick={(e)=> navigate('/write')} className="py-2 px-6 md:px-8 lg:px-10">
+              <Button onClick={()=> navigate('/write')} className="py-2 px-6 md:px-8 lg:px-10">
                 Start Writing
               </Button>
               <Button

@@ -1,13 +1,7 @@
-import React from 'react'
 import { motion } from 'framer-motion' 
 import { useRecoilState } from 'recoil'
 import { AttachmentClicked } from '@/atoms/blog'
 import { PlusCircle } from 'lucide-react'
-
-interface proptype{
-    focusedArea:string,
-    yPosition:number
-}
 
 
 const AttachmentIcon = ({focusedArea , yPosition}:any) => {
