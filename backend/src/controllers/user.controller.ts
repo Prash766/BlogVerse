@@ -36,8 +36,12 @@ const userSignup = async (c: Context) => {
     );
 
     setCookie(c, "token", token,{
-      path:'/'
-    });
+      path:'/',
+      httpOnly:true,
+      secure:c.env.ENV==='PRODUCTION',
+      sameSite:'none'
+    })
+      
     return c.json(
       {
         token: token,
@@ -89,8 +93,12 @@ const loginUser = async (c: Context) => {
       c.env.JWT_SECRET
     );
 
-    setCookie(c, "token", token, {
-      path:'/'
+    setCookie(c, "token", token,{
+      path:'/',
+      httpOnly:true,
+      secure:c.env.ENV==='PRODUCTION',
+      sameSite:'none'
+      
     });
     return c.json(
       {
