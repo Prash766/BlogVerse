@@ -13,13 +13,14 @@ const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
-    FRONTEND_URL:string
+    FRONTEND_URL:string,
+    DEPLOYED_URL: string
   };
 }>();
 
 app.use('/api/v1/*' , async(c:Context , next:Next)=>{
   const corsMiddleware = cors({
-    origin:c.env.FRONTEND_URL,
+    origin:[c.env.FRONTEND_URL,c.env.DEPLOYED_URL],
     credentials: true,
   })
   return corsMiddleware(c, next)

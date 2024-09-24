@@ -167,7 +167,13 @@ const verifyUser = async (c: Context) => {
 };
 
 const logoutUser = async (c: Context) => {
-  setCookie(c, "token", "");
+  setCookie(c, "token", "",{
+    path:'/',
+    httpOnly:true,
+    secure:c.env.ENV==='PRODUCTION',
+    sameSite:'none'
+    
+  });
   return c.json(
     {
       success: true,
