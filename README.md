@@ -2,7 +2,7 @@
 
 **BlogVerse** is a platform for creating and sharing blogs. A hobby project to explore serverless architecture using **Cloudflare Workers** and build a lightweight backend with **Hono.js**.
 
-**LIVE LINK** : [BlogVerse](blog-verse-nine.vercel.app)
+**LIVE LINK** : (https://blog-verse-nine.vercel.app/)
 
 
 ## Main Features
