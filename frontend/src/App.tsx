@@ -11,6 +11,7 @@ import { Suspense } from "react";
 import { Skeleton } from "./components/ui/skeleton";
 import Layout from "./utils/Layout";
 import DashBoard from "./pages/Dashboard/DashBoard";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
@@ -21,25 +22,23 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route element={<ProtectedRoutes />}>
-          <Route element={<Layout />}>
-
-
-            <Route
-              path="/home"
-              element={
-                <Suspense fallback={<Skeleton />}>
-                  {" "}
-                  <Home />
-                </Suspense>
-              }
+            <Route element={<Layout />}>
+              <Route
+                path="/home"
+                element={
+                  <Suspense fallback={<Skeleton />}>
+                    {" "}
+                    <Home />
+                  </Suspense>
+                }
               />
-
-            <Route path="/blog/:id" element={<BlogPage />} />
-            <Route path="/dashboard" element={<DashBoard />} />
+              <Route path="/blog/:id" element={<BlogPage />} />
+              <Route path="/dashboard" element={<DashBoard />} />
             </Route>
             <Route path="/write" element={<CreateBlog />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
+          <Route path="/*" element={<NotFoundPage/>}/>
         </Routes>
       </BrowserRouter>
     </>
